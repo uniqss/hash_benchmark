@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="inc">
+      <UniqueIdentifier>{e1b75123-a83f-48c2-8fca-bfe1bb851504}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="noncrypto.cpp">
@@ -112,6 +115,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="fib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="halfsiphash.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -238,6 +244,18 @@
     </ClInclude>
     <ClInclude Include="lookup3.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dict1.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="dict2.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="vectors.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="halfsiphash.h">
+      <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

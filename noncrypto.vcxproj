@@ -148,6 +148,7 @@
     <ClCompile Include="farmhash.cc" />
     <ClCompile Include="FarmTest.cc" />
     <ClCompile Include="fib.cpp" />
+    <ClCompile Include="halfsiphash.c" />
     <ClCompile Include="hash32.cpp" />
     <ClCompile Include="hash64.cpp" />
     <ClCompile Include="hash64a.cpp" />
@@ -180,6 +181,8 @@
     <ClInclude Include="clhash.h" />
     <ClInclude Include="compiler_specific.h" />
     <ClInclude Include="c_bindings.h" />
+    <ClInclude Include="dict1.h" />
+    <ClInclude Include="dict2.h" />
     <ClInclude Include="endianess.h" />
     <ClInclude Include="endianness.h" />
     <ClInclude Include="farmhash-c.h" />
@@ -188,6 +191,7 @@
     <ClInclude Include="fnv.h" />
     <ClInclude Include="fnv128.h" />
     <ClInclude Include="FNVconfig.h" />
+    <ClInclude Include="halfsiphash.h" />
     <ClInclude Include="halftime-hash.hpp" />
     <ClInclude Include="hh_portable.h" />
     <ClInclude Include="hh_types.h" />
@@ -211,6 +215,7 @@
     <ClInclude Include="sse2neon.h" />
     <ClInclude Include="t1ha.h" />
     <ClInclude Include="umash.h" />
+    <ClInclude Include="vectors.h" />
     <ClInclude Include="vmac.h" />
     <ClInclude Include="wyhash.h" />
     <ClInclude Include="wyhash32.h" />

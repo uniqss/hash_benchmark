@@ -1,124 +1,185 @@
-#include "siphash.h"
-#include "siphash_impl.h"
+/*
+   SipHash reference C implementation
 
-#ifndef U8TO64
-#define U8TO64
-static uint64_t INLINE
-U8TO64_LE(const unsigned char *p) {
-	return *(const uint64_t *)p;
-}
+   Copyright (c) 2012-2022 Jean-Philippe Aumasson
+   <jeanphilippe.aumasson@gmail.com>
+   Copyright (c) 2012-2014 Daniel J. Bernstein <djb@cr.yp.to>
+
+   To the extent possible under law, the author(s) have dedicated all copyright
+   and related and neighboring rights to this software to the public domain
+   worldwide. This software is distributed without any warranty.
+
+   You should have received a copy of the CC0 Public Domain Dedication along
+   with
+   this software. If not, see
+   <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+#include "siphash.h"
+#include <assert.h>
+#include <stddef.h>
+#include <stdint.h>
+
+/* default: SipHash-2-4 */
+#ifndef cROUNDS
+#define cROUNDS 2
+#endif
+#ifndef dROUNDS
+#define dROUNDS 4
+#endif
+
+#define ROTL(x, b) (uint64_t)(((x) << (b)) | ((x) >> (64 - (b))))
+
+#define U32TO8_LE(p, v)                                                        \
+    (p)[0] = (uint8_t)((v));                                                   \
+    (p)[1] = (uint8_t)((v) >> 8);                                              \
+    (p)[2] = (uint8_t)((v) >> 16);                                             \
+    (p)[3] = (uint8_t)((v) >> 24);
+
+#define U64TO8_LE(p, v)                                                        \
+    U32TO8_LE((p), (uint32_t)((v)));                                           \
+    U32TO8_LE((p) + 4, (uint32_t)((v) >> 32));
+
+#define U8TO64_LE(p)                                                           \
+    (((uint64_t)((p)[0])) | ((uint64_t)((p)[1]) << 8) |                        \
+     ((uint64_t)((p)[2]) << 16) | ((uint64_t)((p)[3]) << 24) |                 \
+     ((uint64_t)((p)[4]) << 32) | ((uint64_t)((p)[5]) << 40) |                 \
+     ((uint64_t)((p)[6]) << 48) | ((uint64_t)((p)[7]) << 56))
+
+#define SIPROUND                                                               \
+    do {                                                                       \
+        v0 += v1;                                                              \
+        v1 = ROTL(v1, 13);                                                     \
+        v1 ^= v0;                                                              \
+        v0 = ROTL(v0, 32);                                                     \
+        v2 += v3;                                                              \
+        v3 = ROTL(v3, 16);                                                     \
+        v3 ^= v2;                                                              \
+        v0 += v3;                                                              \
+        v3 = ROTL(v3, 21);                                                     \
+        v3 ^= v0;                                                              \
+        v2 += v1;                                                              \
+        v1 = ROTL(v1, 17);                                                     \
+        v1 ^= v2;                                                              \
+        v2 = ROTL(v2, 32);                                                     \
+    } while (0)
+
+#ifdef DEBUG_SIPHASH
+#include <stdio.h>
+
+#define TRACE                                                                  \
+    do {                                                                       \
+        printf("(%3zu) v0 %016" PRIx64 "\n", inlen, v0);                       \
+        printf("(%3zu) v1 %016" PRIx64 "\n", inlen, v1);                       \
+        printf("(%3zu) v2 %016" PRIx64 "\n", inlen, v2);                       \
+        printf("(%3zu) v3 %016" PRIx64 "\n", inlen, v3);                       \
+    } while (0)
+#else
+#define TRACE
 #endif
 
 /*
-static void INLINE
-U64TO8_LE(unsigned char *p, const uint64_t v) {
-	*(uint64_t *)p = v;
-}
+    Computes a SipHash value
+    *in: pointer to input data (read-only)
+    inlen: input data length in bytes (any size_t value)
+    *k: pointer to the key data (read-only), must be 16 bytes 
+    *out: pointer to output data (write-only), outlen bytes must be allocated
+    outlen: length of the output in bytes, must be 8 or 16
 */
+int siphash(const void *in, const size_t inlen, const void *k, uint8_t *out,
+            const size_t outlen) {
 
-#define SIPCOMPRESS \
-	v0 += v1; v2 += v3; \
-	v1 = ROTL64(v1,13); v3 = ROTL64(v3,16); \
-	v1 ^= v0; v3 ^= v2; \
-	v0 = ROTL64(v0,32); \
-	v2 += v1; v0 += v3; \
-	v1 = ROTL64(v1,17); v3 = ROTL64(v3,21); \
-	v1 ^= v2; v3 ^= v0; \
-	v2 = ROTL64(v2,32)
+    const unsigned char *ni = (const unsigned char *)in;
+    const unsigned char *kk = (const unsigned char *)k;
 
-/* The 64bit 2-4 variant */
-uint64_t
-siphash(const unsigned char key[16], const unsigned char *m, size_t len) {
-	uint64_t v0, v1, v2, v3;
-	uint64_t mi, k0, k1;
-	uint64_t last7;
-	size_t i, blocks;
+    assert((outlen == 8) || (outlen == 16));
+    uint64_t v0 = UINT64_C(0x736f6d6570736575);
+    uint64_t v1 = UINT64_C(0x646f72616e646f6d);
+    uint64_t v2 = UINT64_C(0x6c7967656e657261);
+    uint64_t v3 = UINT64_C(0x7465646279746573);
+    uint64_t k0 = U8TO64_LE(kk);
+    uint64_t k1 = U8TO64_LE(kk + 8);
+    uint64_t m;
+    int i;
+    const unsigned char *end = ni + inlen - (inlen % sizeof(uint64_t));
+    const int left = inlen & 7;
+    uint64_t b = ((uint64_t)inlen) << 56;
+    v3 ^= k1;
+    v2 ^= k0;
+    v1 ^= k1;
+    v0 ^= k0;
 
-	k0 = U8TO64_LE(key + 0);
-	k1 = U8TO64_LE(key + 8);
-	v0 = k0 ^ 0x736f6d6570736575ull;
-	v1 = k1 ^ 0x646f72616e646f6dull;
-	v2 = k0 ^ 0x6c7967656e657261ull;
-	v3 = k1 ^ 0x7465646279746573ull;
+    if (outlen == 16)
+        v1 ^= 0xee;
 
-	last7 = (uint64_t)(len & 0xff) << 56;
+    for (; ni != end; ni += 8) {
+        m = U8TO64_LE(ni);
+        v3 ^= m;
 
-	for (i = 0, blocks = (len & ~7); i < blocks; i += 8) {
-		mi = U8TO64_LE(m + i);
-		v3 ^= mi;
-		SIPCOMPRESS; /* 2 c rounds */
-		SIPCOMPRESS;
-		v0 ^= mi;
-	}
+        TRACE;
+        for (i = 0; i < cROUNDS; ++i)
+            SIPROUND;
 
-	switch (len - blocks) {
-		case 7: last7 |= (uint64_t)m[i + 6] << 48;
-		case 6: last7 |= (uint64_t)m[i + 5] << 40;
-		case 5: last7 |= (uint64_t)m[i + 4] << 32;
-		case 4: last7 |= (uint64_t)m[i + 3] << 24;
-		case 3: last7 |= (uint64_t)m[i + 2] << 16;
-		case 2: last7 |= (uint64_t)m[i + 1] <<  8;
-		case 1: last7 |= (uint64_t)m[i + 0]      ;
-		case 0:
-		default:;
-	};
-	v3 ^= last7;
-	SIPCOMPRESS; /* 2 more c rounds */
-	SIPCOMPRESS;
-	v0 ^= last7;
-	v2 ^= 0xff;
-	SIPCOMPRESS; /* and 4 final d rounds */
-	SIPCOMPRESS;
-	SIPCOMPRESS;
-	SIPCOMPRESS;
-	return v0 ^ v1 ^ v2 ^ v3;
+        v0 ^= m;
+    }
+
+    switch (left) {
+    case 7:
+        b |= ((uint64_t)ni[6]) << 48;
+        /* FALLTHRU */
+    case 6:
+        b |= ((uint64_t)ni[5]) << 40;
+        /* FALLTHRU */
+    case 5:
+        b |= ((uint64_t)ni[4]) << 32;
+        /* FALLTHRU */
+    case 4:
+        b |= ((uint64_t)ni[3]) << 24;
+        /* FALLTHRU */
+    case 3:
+        b |= ((uint64_t)ni[2]) << 16;
+        /* FALLTHRU */
+    case 2:
+        b |= ((uint64_t)ni[1]) << 8;
+        /* FALLTHRU */
+    case 1:
+        b |= ((uint64_t)ni[0]);
+        break;
+    case 0:
+        break;
+    }
+
+    v3 ^= b;
+
+    TRACE;
+    for (i = 0; i < cROUNDS; ++i)
+        SIPROUND;
+
+    v0 ^= b;
+
+    if (outlen == 16)
+        v2 ^= 0xee;
+    else
+        v2 ^= 0xff;
+
+    TRACE;
+    for (i = 0; i < dROUNDS; ++i)
+        SIPROUND;
+
+    b = v0 ^ v1 ^ v2 ^ v3;
+    U64TO8_LE(out, b);
+
+    if (outlen == 8)
+        return 0;
+
+    v1 ^= 0xdd;
+
+    TRACE;
+    for (i = 0; i < dROUNDS; ++i)
+        SIPROUND;
+
+    b = v0 ^ v1 ^ v2 ^ v3;
+    U64TO8_LE(out + 8, b);
+
+    return 0;
 }
-
-/* The 64bit 1-3 variant */
-uint64_t
-siphash13(const unsigned char key[16], const unsigned char *m, size_t len) {
-	uint64_t v0, v1, v2, v3;
-	uint64_t mi, k0, k1;
-	uint64_t last7;
-	size_t i, blocks;
-
-	k0 = U8TO64_LE(key + 0);
-	k1 = U8TO64_LE(key + 8);
-	v0 = k0 ^ 0x736f6d6570736575ull;
-	v1 = k1 ^ 0x646f72616e646f6dull;
-	v2 = k0 ^ 0x6c7967656e657261ull;
-	v3 = k1 ^ 0x7465646279746573ull;
-
-	last7 = (uint64_t)(len & 0xff) << 56;
-
-	for (i = 0, blocks = (len & ~7); i < blocks; i += 8) {
-		mi = U8TO64_LE(m + i);
-		v3 ^= mi;
-		SIPCOMPRESS; /* 1 c round */
-		v0 ^= mi;
-	}
-
-	switch (len - blocks) {
-		case 7: last7 |= (uint64_t)m[i + 6] << 48;
-		case 6: last7 |= (uint64_t)m[i + 5] << 40;
-		case 5: last7 |= (uint64_t)m[i + 4] << 32;
-		case 4: last7 |= (uint64_t)m[i + 3] << 24;
-		case 3: last7 |= (uint64_t)m[i + 2] << 16;
-		case 2: last7 |= (uint64_t)m[i + 1] <<  8;
-		case 1: last7 |= (uint64_t)m[i + 0]      ;
-		case 0:
-		default:;
-	};
-	v3 ^= last7;
-	SIPCOMPRESS; /* 1 more c round */
-	v0 ^= last7;
-	v2 ^= 0xff;
-	SIPCOMPRESS; /* and 3 final d rounds */
-	SIPCOMPRESS;
-	SIPCOMPRESS;
-	return v0 ^ v1 ^ v2 ^ v3;
-}
-
-#undef sipcompress
-
-#include "halfsiphash.c"
