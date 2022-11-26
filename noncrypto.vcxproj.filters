@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="noncrypto.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="farmhash-c.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xxhash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="city2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="farmhash.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="farmhash-c-test.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FarmTest.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mum.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MurmurHash1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MurmurHash2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MurmurHash3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="spookv2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="metrohash64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="metrohash128.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t1ha0.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t1ha1.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t1ha2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t1ha0_ia32aes_avx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t1ha0_ia32aes_avx2.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="t1ha0_ia32aes_noavx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pearson.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="have_ulong64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hash32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hash32a.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hash64a.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hash64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fnv128.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="highwayhash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="siphash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clhash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="falkhash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="City.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="farmhash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="farmhash-c.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MurmurHash1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MurmurHash2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MurmurHash3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sse2neon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xxh3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xxhash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spookyv2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="metrohash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="metrohash64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="metrohash128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="t1ha.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="portable_endian.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pearson.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fnv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fnv128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FNVconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fnv-private.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="endianness.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="halftime-hash.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c_bindings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hh_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="highwayhash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="arch_specific.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compiler_specific.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="laca.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hh_portable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="endianess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="load3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="siphash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="siphash_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="umash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clhash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wyhash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wyhash32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vmac.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lookup3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
