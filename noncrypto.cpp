@@ -648,14 +648,14 @@ int bench() {
 	int curr_conflict = 0;
 	std::vector<std::pair<std::string, int64_t>> conflict_counts;
 
-#if 0
+#if 1
 #define BENCHMARK_TIME
 #endif
 
 #ifdef BENCHMARK_TIME
 	// benchmark time
 #define P(str) std::cout << str << std::endl;t1 = t2;
-#define PTIME(str) t2 = std::chrono::system_clock::now(); std::cout << str << " " << (t2- t1).count() << std::endl; time_costs.push_back({str, (t2 - t1).count()}); t1 = t2;
+#define PR(str) t2 = std::chrono::system_clock::now(); std::cout << str << " " << (t2- t1).count() << std::endl; time_costs.push_back({str, (t2 - t1).count()}); t1 = t2;
 #define CHECK_CONFLICT
 #else
 	// benchmark conflict
