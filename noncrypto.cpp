@@ -654,7 +654,7 @@ int bench() {
 
 #ifdef BENCHMARK_TIME
 	// benchmark time
-#define P(str) std::cout << str << std::endl;t1 = t2;
+#define P(str) std::cout << str << std::endl;t1 = t2 = std::chrono::system_clock::now();;
 #define PR(str) t2 = std::chrono::system_clock::now(); std::cout << str << " " << (t2- t1).count() << std::endl; time_costs.push_back({str, (t2 - t1).count()}); t1 = t2;
 #define CHECK_CONFLICT
 #else
@@ -666,12 +666,14 @@ int bench() {
 						if (hval64 > 0) { if (conflict64.count(hval64) > 0) { ++curr_conflict; } conflict64.insert(hval64);}
 #endif
 
-	P("START!!!!!");
+	P("INIT!!!!!");
 
 #define HASH_LOOP_COUNT 1
 
 #define LOOP for (size_t i = 0; i < HASH_LOOP_COUNT; ++i)\
 				for (const auto& key : keys)
+
+	P("START!!!!!");
 
 	// cityhash
 	LOOP { hval32 = CityHash32(key.c_str(), key.size()); CHECK_CONFLICT; }
